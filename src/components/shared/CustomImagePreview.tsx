@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image, { StaticImageData } from "next/image";
 import { motion } from "framer-motion";
+import { isMobile } from "react-device-detect";
 
 export const CustomImagePreview = ({
   image,
@@ -15,7 +16,8 @@ export const CustomImagePreview = ({
 
   const [cursor, setCursor] = useState({ size: 200, offset: 200 / 3 });
   const [isImgLoad, setIsImgLoad] = useState(false);
-  const imageEnter = () => setCursorVariant("image");
+  const imageEnter = () =>
+    !isMobile ? setCursorVariant("image") : setCursorVariant("default");
   const imageLeave = () => setCursorVariant("default");
   const [angle, setAngle] = useState(0);
   const [mousePosition, setMousePosition] = useState({
@@ -27,6 +29,7 @@ export const CustomImagePreview = ({
     width: typeof window !== "undefined" ? window.innerWidth : 0,
     height: typeof window !== "undefined" ? window.innerHeight : 0,
   });
+  const [isCursorVisible, setIsCursorVisible] = useState(false);
 
   const variants = {
     default: {
@@ -41,6 +44,10 @@ export const CustomImagePreview = ({
       backgroundColor: "#EEFF33",
     },
   };
+
+  useEffect(() => {
+    setIsCursorVisible(isMobile === true ? false : true);
+  }, [isMobile]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -98,8 +105,18 @@ export const CustomImagePreview = ({
     };
   });
 
+  useEffect(() => {
+    console.log("asfdasfasf ", isMobile);
+  }, [isMobile]);
+
   return (
-    <div className="w-full h-full black-cursor image-animation-wrapper">
+    <motion.div
+      className="w-full h-full black-cursor image-animation-wrapper"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 2 }}
+    >
       <div
         style={{
           background: "#000",
@@ -121,22 +138,27 @@ export const CustomImagePreview = ({
           className={`${
             isImgLoad ? "opacity-1" : "opacity-0"
           } transition-all duration-500 backgroundImage ${style}`}
-        />
-        <motion.div style={{ overflow: "hidden" }}>
-          <motion.div
-            className="cursor black-cursor"
-            variants={variants}
-            animate={cursorVariant}
-          >
-            <motion.img
-              src="ArrowUp.svg"
-              alt="arrow"
-              style={{ rotate: angle, width: "30px" }}
-              transition={{ type: "spring", stiffness: 10 }}
-            />{" "}
-          </motion.div>
-        </motion.div>
+        />{" "}
+        {isCursorVisible ? (
+          <div style={{ overflow: "hidden" }}>
+            <motion.div
+              className={`cursor black-cursor  
+            `}
+              style={{ cursor: "none" }}
+              variants={variants}
+              animate={cursorVariant}
+            >
+              <motion.img
+                src="ArrowUp.svg"
+                alt="arrow"
+                className={` ${isMobile ? "hidden opacity-0" : "block"} `}
+                style={{ rotate: angle, width: "30px" }}
+                transition={{ type: "spring", stiffness: 10 }}
+              />{" "}
+            </motion.div>
+          </div>
+        ) : null}
       </div>
-    </div>
+    </motion.div>
   );
 };

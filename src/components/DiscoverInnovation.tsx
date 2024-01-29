@@ -4,7 +4,7 @@ import React from "react";
 const DiscoverInnovation = () => {
   return (
     <div className="w-full pt-16 pb-[54px] flex flex-col gap-12 lg:gap-24">
-      <div className="text-light xl:text-8xl md:text-7xl  text-6xl max-w-2xl lg:max-w-5xl">
+      <div className="text-light xl:text-8xl md:text-7xl text-5xl   max-w-2xl lg:max-w-5xl">
         Discover innovation opportunities
       </div>
       <div className="flex flex-col gap-5">
